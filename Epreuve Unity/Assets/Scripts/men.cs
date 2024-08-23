@@ -16,19 +16,30 @@ public class men : MonoBehaviour
     public GameObject menuGameOver;
     public GameObject menuVictory;
     public int scoreVictory;
+    public Animator animator;
 
     void Start()
     {
         labelTimer.text = timer.ToString();
         StartCoroutine(Timer());
         characterController = GetComponent<CharacterController>();
+        Time.timeScale = 1;
     }
 
     void Update()
     {
         characterController.Move(transform.right * Input.GetAxis("Horizontal") * 0.2f);
         characterController.Move(transform.forward * Input.GetAxis("Vertical") * 0.2f);
-        
+        if (Input.GetAxis("Horizontal") ==0 && Input.GetAxis("Vertical") == 0)
+        {
+            animator.SetBool("isWalk",false);
+        }
+        else
+        {
+            animator.SetBool("isWalk", true);
+        }
+
+
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -41,6 +52,7 @@ public class men : MonoBehaviour
             {
                 labelPointVictory.text = "Vous avez obtenu les "+point.ToString()+" points !";
                 menuVictory.SetActive(true);
+                Time.timeScale = 0;
             }
         }
     }
@@ -52,6 +64,7 @@ public class men : MonoBehaviour
             if (i == 0 && point < scoreVictory){
                 labelPointGameOver.text = "Score : "+point.ToString();
                 menuGameOver.SetActive(true);
+                Time.timeScale = 0;
             };
             yield return new WaitForSeconds(1);
         }
